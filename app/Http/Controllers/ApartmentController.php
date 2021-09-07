@@ -54,7 +54,10 @@ class ApartmentController extends Controller
      */
     public function show($id)
     {
-        //
+        $apartment = Apartment::findOrFail($id);
+        return view('apartments.show',[
+            'apartment' => $apartment
+        ]);
     }
 
     /**
@@ -65,7 +68,10 @@ class ApartmentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $apartment = Apartment::findOrFail($id);
+        return view('apartments.edit',[
+           'apartment' => $apartment
+        ]);
     }
 
     /**
@@ -77,7 +83,12 @@ class ApartmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $apartment = Apartment::findOrFail($id);
+        $apartment->name = $request->input('name');
+        $apartment->num_floor = $request->input('num_floor');
+        $apartment->num_room = $request->input('num_room');
+        $apartment->save();
+        return redirect()->route('apartments.show',['apartment' => $id]);
     }
 
     /**
@@ -86,8 +97,15 @@ class ApartmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+        $apartment = Apartment::findOrFail($id);
+        if($apartment->name === $request->input('name')){
+            $apartment->delete();
+            return redirect()->route('apartments.index');
+        }
+        return redirect()->back();
+
+
     }
 }
